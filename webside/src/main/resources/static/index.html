@@ -772,7 +772,7 @@
                                 <label for="num" class="col-sm-2 control-label">num</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="num"
-                                           placeholder="purchase num">
+                                           placeholder="purchase num" ng-model="num" ng-init="num=1">
                                 </div>
                             </div>
 
@@ -780,21 +780,21 @@
                                 <label for="firstname" class="col-sm-2 control-label">first name</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="firstname"
-                                           placeholder="first name">
+                                           placeholder="first name" ng-model="firstname" ng-init="firstname=''">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="lastname" class="col-sm-2 control-label">last name</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="lastname"
-                                           placeholder="last name">
+                                           placeholder="last name" ng-model="lastname" ng-init="lastname=''">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="phone" class="col-sm-2 control-label">phone</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="phone"
-                                           placeholder="phone">
+                                           placeholder="phone" ng-model="phone" ng-init="phone=13000000000">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -802,7 +802,7 @@
                                 <div class="col-sm-10">
                                     <!--<input type="text" class="form-control" id="country"-->
                                            <!--placeholder="country">-->
-                                    <select ng-model="country" class="form-control" id="country">
+                                    <select ng-model="country" class="form-control" id="country" ng-init="country='America'">
                                         <option ng-repeat="x in countries" value="x">{{x}}</option>
                                     </select>
                                 </div>
@@ -812,7 +812,7 @@
                                 <div class="col-sm-10">
                                     <!--<input type="text" class="form-control" id="city"-->
                                            <!--placeholder="city">-->
-                                    <select ng-model="city" class="form-control" id="city">
+                                    <select ng-model="city" class="form-control" id="city" ng-init="city='New York'">
                                         <option ng-repeat="x in cities" value="x">{{x}}</option>
                                     </select>
                                 </div>
@@ -822,7 +822,7 @@
                                 <div class="col-sm-10">
                                     <!--<input type="text" class="form-control" id="region"-->
                                            <!--placeholder="region">-->
-                                    <select ng-model="region" class="form-control" id="region">
+                                    <select ng-model="region" class="form-control" id="region" ng-init="region='Albany'">
                                         <option ng-repeat="x in regions" value="x">{{x}}</option>
                                     </select>
                                 </div>
@@ -831,14 +831,14 @@
                                 <label for="additional" class="col-sm-2 control-label">additional</label>
                                 <div class="col-sm-10">
                                     <textarea class="form-control" id="additional" rows="3"
-                                              placeholder="additional address"></textarea>
+                                              placeholder="additional address" ng-model="additional" ng-init="additional=''"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="remark" class="col-sm-2 control-label">remark</label>
                                 <div class="col-sm-10">
                                     <textarea class="form-control" id="remark" rows="3"
-                                              placeholder="remark"></textarea>
+                                              placeholder="remark" ng-model="remark" ng-init="remark=''"></textarea>
                                 </div>
                             </div>
 
@@ -911,15 +911,28 @@
                     $('#iphoneX').modal('hide');
                     $('#fill').modal('show');
 
-                }
+                };
                 $scope.mypay = true;
                 $scope.next = function () {
+                    mydata = {
+                        num: $scope.num,
+                        firstname: $scope.firstname,
+                        lastname: $scope.lastname,
+                        phone: $scope.phone,
+                        country: $scope.country,
+                        city: $scope.city,
+                        region: $scope.region,
+                        additional: $scope.additional,
+                        remark: $scope.remark
+                    };
+                    console.log(mydata);
                     $http({
-                        method: 'GET',
-                        url: '/other/next'
+                        method: 'POST',
+                        url: '/other/next',
+                        data: mydata
                     }).then(function successCallback(response) {
-                        $scope.payurl = response.data.url
-//                        alert("yes")
+                        $scope.payurl = response.data.url;
+                        console.log(response.data.code);
                         var poll = function() {
                             $timeout(function() {
                                 $http({
