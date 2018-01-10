@@ -14,6 +14,7 @@ import java.util.HashMap;
 public class OtherController {
 
     String postUrl = "http://10.0.1.52:8001/express/deliver";
+    String fUrl = "http://10.0.1.52:3223/transfer";
 
     public Integer id = 0;
     public HashMap<String, Boolean> payments = new HashMap<>();
@@ -77,7 +78,6 @@ public class OtherController {
     @GetMapping("/pay")
     public Object pay(){
         HashMap<Object, Object> response = new HashMap<>();
-        payments.put(id.toString(), true);
         try {
             Thread.sleep(1500);
             JSONObject jsonObject = new JSONObject();
@@ -88,8 +88,18 @@ public class OtherController {
             jsonObject.put("fromUserPhone", "13266666666");
             jsonObject.put("toUserPhone", phone.toString());
             JsonSMS(jsonObject.toString(), postUrl);
+
+            // 调金融
+            JSONObject fj = new JSONObject();
+            fj.put("fromAccount", "123456");
+            fj.put("toAccount", "000000");
+            fj.put("sum", 10000);
+            JsonSMSFinance(fj.toString(), fUrl);
+
+            payments.put(id.toString(), true);
             response.put("flag","0");
             return response;
+
         } catch (InterruptedException e) {
             response.put("flag","1");
             return response;
@@ -125,7 +135,43 @@ public class OtherController {
             while ((line = in.readLine()) != null) {
                 result += line + "\n";
             }
-            System.out.println(result);
+//            System.out.println(result);
+            System.out.println("E");
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace(System.out);
+        }
+        return false;
+    }
+
+    public static Boolean JsonSMSFinance(String postData, String postUrl) {
+        try {
+            //发送POST请求
+            URL url = new URL(postUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Connection", "Keep-Alive");
+            conn.setUseCaches(false);
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Content-Length", "" + postData.length());
+            OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+            out.write(postData);
+
+            out.flush();
+            out.close();
+            //获取响应状态
+            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                System.out.println("connect failed!");
+                return false;
+            }
+            String line, result = "";
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+            while ((line = in.readLine()) != null) {
+                result += line + "\n";
+            }
+//            System.out.println(result);
+            System.out.println("F");
             return true;
         } catch (IOException e) {
             e.printStackTrace(System.out);
