@@ -33,7 +33,7 @@ public class OtherController {
     @PostMapping("/next")
     public Object next(@RequestBody HashMap<Object, Object> req){
         HashMap<Object, Object> response = new HashMap<>();
-        String url = "http://qr.liantu.com/api.php?bg=f3f3f3&fg=ff0000&gc=222222&el=l&w=200&m=10&text=" + "http://10.0.1.2:8088/other/pay/";
+        String url = "http://qr.liantu.com/api.php?bg=f3f3f3&fg=ff0000&gc=222222&el=l&w=200&m=10&text=" + "http://10.60.41.125:8088/other/pay/";
         try {
             id = id + 1;
 
